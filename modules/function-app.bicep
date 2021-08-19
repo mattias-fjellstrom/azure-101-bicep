@@ -1,10 +1,12 @@
-@description('The URL to the frontend, for CORS settings')
+@description('The URL to the web site, required for CORS settings on the function app')
 param websiteUrl string
 
 @description('Application specific settings such as connection strings')
 param appSettings array = []
 
 var nameSuffix = '${uniqueString(resourceGroup().id)}'
+
+var urlMinusTrailingSlash = take(websiteUrl, length(websiteUrl)-1)
 
 resource plan 'Microsoft.Web/serverfarms@2021-01-15' = {
   name: 'plan-${nameSuffix}'
@@ -47,7 +49,7 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
       cors: {
         allowedOrigins: [
           'http://localhost:3000'
-          websiteUrl
+          urlMinusTrailingSlash
         ]
       }
       appSettings: concat(appSettings, [

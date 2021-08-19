@@ -14,23 +14,21 @@ module servicebus './modules/servicebus.bicep' = {
   name: 'servicebus-module-deployment'
 }
 
-// function app module
 module functionApp './modules/function-app.bicep' = {
   name: 'function-app-module-deployment'
   params: {
-    // provide the web endpoint for your storage account
-    // e.g. https://mystorageaccount.z16.web.core.windows.net/
-    websiteUrl: 'https://...'
+    // the web endpoint of your web storage account e.g. https://mystorageaccount.z16.web.core.windows.net/
+    websiteUrl: ''
 
-    // provide any app settings that you require
+    // provide app settings that your function app requires
     appSettings: [
       // {
-      //   name: 'STORAGEACCOUNT_NAME'
-      //   value: <reference to storage account name>
+      //   name: 'MY_APP_SETTING_1'
+      //   value: 'value'
       // }
       // {
-      //   name: 'STORAGEACCOUNT_CONNECTIONSTRING'
-      //   value: <reference to storage account connection string>
+      //   name: 'MY_APP_SETTING_2'
+      //   value: 'value'
       // }
     ]
   }
