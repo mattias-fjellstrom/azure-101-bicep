@@ -74,6 +74,10 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
           value: 'node'
         }
         {
+          name: 'WEBSITE_NODE_DEFAULT_VERSION'
+          value: '~14'
+        }
+        {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
           value: 'DefaultEndpointsProtocol=https;AccountName=${stg.name};AccountKey=${listKeys(stg.name, stg.apiVersion).keys[0].value};EndpointSuffix=core.windows.net'
         }
