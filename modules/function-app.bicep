@@ -1,17 +1,16 @@
-@description('The URL to the web site, required for CORS settings on the function app')
+@description('The URL to the frontend, for CORS settings')
 param websiteUrl string
 
 @description('Application specific settings such as connection strings')
 param appSettings array = []
 
 var nameSuffix = '${uniqueString(resourceGroup().id)}'
-
 var urlMinusTrailingSlash = take(websiteUrl, length(websiteUrl)-1)
 
-resource plan 'Microsoft.Web/serverfarms@2021-01-15' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   name: 'plan-${nameSuffix}'
   location: resourceGroup().location
-  kind: 'Linux'
+  kind: 'functionapp'
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
@@ -21,7 +20,7 @@ resource plan 'Microsoft.Web/serverfarms@2021-01-15' = {
   }
 }
 
-resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: 'funcstorage${nameSuffix}'
   location: resourceGroup().location
   kind: 'StorageV2'
@@ -30,7 +29,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'appinsights-${nameSuffix}'
   location: resourceGroup().location
   kind: 'web'
@@ -39,6 +38,8 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForQuery: 'Enabled'
   }
 }
+
+var endpointSuffix = environment().suffixes.storage
 
 resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
   name: 'funcapp-${nameSuffix}'
@@ -55,15 +56,15 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
       appSettings: concat(appSettings, [
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: appInsights.properties.InstrumentationKey
+          value: applicationInsights.properties.InstrumentationKey
         }
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsights.properties.ConnectionString
+          value: applicationInsights.properties.ConnectionString
         }
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${stg.name};AccountKey=${listKeys(stg.name, stg.apiVersion).keys[0].value};EndpointSuffix=core.windows.net'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${listKeys(storage.name, storage.apiVersion).keys[0].value};EndpointSuffix=${endpointSuffix}'
         }
         {
           name: 'FUNCTIONS_EXTENSION_VERSION'
@@ -74,15 +75,17 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
           value: 'node'
         }
         {
+          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${storage.name};AccountKey=${listKeys(storage.name, storage.apiVersion).keys[0].value};EndpointSuffix=${endpointSuffix}'
+        }
+        {
           name: 'WEBSITE_NODE_DEFAULT_VERSION'
           value: '~14'
         }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${stg.name};AccountKey=${listKeys(stg.name, stg.apiVersion).keys[0].value};EndpointSuffix=core.windows.net'
-        }
+        // WEBSITE_CONTENTSHARE is created automatically
+        // WEBSITE_RUN_FROM_PACKAGE will be set during app deployment from VS Code
       ])
     }
-    serverFarmId: plan.id
+    serverFarmId: appServicePlan.id
   }
 }
