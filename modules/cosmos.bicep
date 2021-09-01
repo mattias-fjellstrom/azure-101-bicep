@@ -1,19 +1,3 @@
-// module specification:
-//
-// parameters:
-//   - database name
-//   - container name
-//
-// resources:
-//   - Microsoft.DocumentDB/databaseAccounts (provided)
-//   - Microsoft.DocumentDB/databaseAccounts/sqlDatabases
-//   - Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
-//
-// outputs:
-//   - Connection string for the Cosmos DB account
-//     (hint: listConnectionStrings())
-
-
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
   name: 'cosmos-${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
@@ -33,3 +17,10 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
     ]
   }
 }
+
+// TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+
+// TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+
+// TODO: add an output for the connection string of the Cosmos DB account
+//       hint: use listConnectionStrings() https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-resource#list
