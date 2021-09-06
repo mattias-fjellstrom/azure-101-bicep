@@ -19,8 +19,12 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
 }
 
 // TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases
+//       - make sure to give the database the name that your function app expects
+//         (i.e. if you have hardcoded the name in your function app you need to set the same name for the queue here)
 
 // TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
+//       - make sure to give the container the name that your function app expects
+//         (i.e. if you have hardcoded the name in your function app you need to set the same name for the queue here)
 
 // TODO: add an output for the connection string of the Cosmos DB account
-//       hint: use listConnectionStrings() https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-resource#list
+//       - hint: use listConnectionStrings() https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-resource#list

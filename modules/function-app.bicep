@@ -1,3 +1,5 @@
+// NOTE: you do NOT have to edit this file unless you wish to do custom configurations
+
 @description('The URL to the frontend, for CORS settings')
 param websiteUrl string
 

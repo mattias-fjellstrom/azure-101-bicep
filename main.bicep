@@ -18,7 +18,7 @@ module functionApp './modules/function-app.bicep' = {
   name: 'function-app-module-deployment'
   params: {
     // TODO: add a reference to the website endpoint for your web storage account
-    // e.g. https://mystorageaccount.z16.web.core.windows.net/
+    // this output is available from the 'web' module
     websiteUrl: ''
 
     // TODO: add application settings that your function app requires
