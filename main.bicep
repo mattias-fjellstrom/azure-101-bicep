@@ -17,9 +17,10 @@ module servicebus './modules/servicebus.bicep' = {
 module functionApp './modules/function-app.bicep' = {
   name: 'function-app-module-deployment'
   params: {
-    // TODO: add a reference to the website endpoint for your web storage account
-    // this output is available from the 'web' module
-    websiteUrl: ''
+    corsUrls: [
+      web.outputs.storageWebEndpoint
+      web.outputs.cdnEndpoint
+    ]
 
     // TODO: add application settings that your function app requires
     // - go through the local.settings.json file in your function app project to see which app settings you need

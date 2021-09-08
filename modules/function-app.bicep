@@ -1,13 +1,12 @@
 // NOTE: you do NOT have to edit this file unless you wish to do custom configurations
 
-@description('The URL to the frontend, for CORS settings')
-param websiteUrl string
+@description('URLs to add to the Function App CORS settings')
+param corsUrls array = []
 
 @description('Application specific settings such as connection strings')
 param appSettings array = []
 
 var nameSuffix = '${uniqueString(resourceGroup().id)}'
-var urlMinusTrailingSlash = take(websiteUrl, length(websiteUrl)-1)
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-01-15' = {
   name: 'plan-${nameSuffix}'
@@ -50,10 +49,9 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
   properties: {
     siteConfig: {
       cors: {
-        allowedOrigins: [
+        allowedOrigins: concat(corsUrls, [
           'http://localhost:3000'
-          urlMinusTrailingSlash
-        ]
+        ])
       }
       appSettings: concat(appSettings, [
         {

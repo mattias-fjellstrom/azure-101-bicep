@@ -1,7 +1,5 @@
 // NOTE: you do NOT have to edit this file unless you wish to do custom configurations
 
-output webEndpoint string = storage.properties.primaryEndpoints.web
-
 var namePostfix = uniqueString(resourceGroup().id)
 
 resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
@@ -70,3 +68,8 @@ resource enableStaticWebsite 'Microsoft.Resources/deploymentScripts@2020-10-01' 
     scriptContent: 'az storage blob service-properties update --static-website --index-document $1 --404-document $1 '
   }
 }
+
+var storageWebEndpoint = storage.properties.primaryEndpoints.web
+var urlMinusTrailingSlash = take(storageWebEndpoint, length(storageWebEndpoint)-1)
+output storageWebEndpoint string = urlMinusTrailingSlash
+output cdnEndpoint string = 'https://${cdn::endpoint.properties.hostName}'
