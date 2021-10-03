@@ -43,7 +43,6 @@ resource cdn 'Microsoft.Cdn/profiles@2020-09-01' = {
 // the container is deleted after the script is executed
 // note that when performing this operation the '$web' container is created automatically
 param utcValue string = utcNow()
-
 resource enableStaticWebsite 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: 'enableStaticWebsite'
   location: resourceGroup().location
@@ -71,5 +70,6 @@ resource enableStaticWebsite 'Microsoft.Resources/deploymentScripts@2020-10-01' 
 
 var storageWebEndpoint = storage.properties.primaryEndpoints.web
 var urlMinusTrailingSlash = take(storageWebEndpoint, length(storageWebEndpoint)-1)
+
 output storageWebEndpoint string = urlMinusTrailingSlash
 output cdnEndpoint string = 'https://${cdn::endpoint.properties.hostName}'
