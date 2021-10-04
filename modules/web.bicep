@@ -59,8 +59,7 @@ resource enableStaticWebsite 'Microsoft.Resources/deploymentScripts@2020-10-01' 
       }
       {
         name: 'AZURE_STORAGE_KEY'
-        value: storage.listKeys().keys[0].value
-        secureValue: 'true'
+        secureValue: storage.listKeys().keys[0].value
       }
     ]
     arguments: 'index.html'
