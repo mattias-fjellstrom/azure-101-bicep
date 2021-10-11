@@ -2,4 +2,4 @@
 
 In this lab we will create the following infrastructure.
 
-![architecture](./assets/architecture.png)
+![architecture](./assets/lab-architecture.png)
