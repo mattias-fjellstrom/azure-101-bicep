@@ -82,8 +82,11 @@ resource functionApp 'Microsoft.Web/sites@2021-01-15' = {
           name: 'WEBSITE_NODE_DEFAULT_VERSION'
           value: '~14'
         }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
+        }
         // WEBSITE_CONTENTSHARE is created automatically
-        // WEBSITE_RUN_FROM_PACKAGE will be set during app deployment from VS Code
       ])
     }
     serverFarmId: appServicePlan.id
