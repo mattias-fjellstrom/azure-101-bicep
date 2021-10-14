@@ -26,5 +26,8 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
 //       - make sure to give the container the name that your function app expects
 //         (i.e. if you have hardcoded the name in your function app you need to set the same name for the container here)
 
-// TODO: add an output for the connection string of the Cosmos DB account
+// TODO: add an output for the connection string of the Cosmos DB account resource
 //       - hint: use listConnectionStrings() https://docs.microsoft.com/azure/azure-resource-manager/bicep/bicep-functions-resource#list
+//               see a sample response for this function at 
+//               https://docs.microsoft.com/rest/api/cosmos-db-resource-provider/2021-04-15/database-accounts/list-connection-strings#examples
+//               (scroll down to "Sample response")
