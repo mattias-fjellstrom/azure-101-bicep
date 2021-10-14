@@ -25,6 +25,7 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
 // TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
 //       - make sure to give the container the name that your function app expects
 //         (i.e. if you have hardcoded the name in your function app you need to set the same name for the container here)
+//       - you will need to configure the "partitionKey" property (properties.resource.partitionKey)
 
 // TODO: add an output for the connection string of the Cosmos DB account resource
 //       - hint: use listConnectionStrings() https://docs.microsoft.com/azure/azure-resource-manager/bicep/bicep-functions-resource#list
