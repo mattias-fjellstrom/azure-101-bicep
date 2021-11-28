@@ -1,22 +1,26 @@
+@description('Timestamp used to uniquely name each module deployment')
+param now string = utcNow('')
+
 module web './modules/web.bicep' = {
-  name: 'web-module-deployment'
+  name: 'web-module-${now}'
 }
 
 module storage './modules/storage.bicep' = {
-  name: 'storage-module-deployment'
+  name: 'storage-module-${now}'
 }
 
 module cosmos './modules/cosmos.bicep' = {
-  name: 'cosmos-module-deployment'
+  name: 'cosmos-module-${now}'
 }
 
 module servicebus './modules/servicebus.bicep' = {
-  name: 'servicebus-module-deployment'
+  name: 'servicebus-module-${now}'
 }
 
 module functionApp './modules/function-app.bicep' = {
-  name: 'function-app-module-deployment'
+  name: 'function-app-module-${now}'
   params: {
+    // a list of endpoints that will be added to the CORS list on the function app
     corsUrls: [
       web.outputs.storageWebEndpoint
       web.outputs.cdnEndpoint

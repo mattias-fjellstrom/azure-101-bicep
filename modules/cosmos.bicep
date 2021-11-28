@@ -1,3 +1,4 @@
+@description('A serverless Cosmos DB account')
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
   name: 'cosmos-${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
@@ -19,16 +20,22 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
 }
 
 // TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases
-//       - make sure to give the database the name that your function app expects
-//         (i.e. if you have hardcoded the name in your function app you need to set the same name for the database here)
+//       - make the resource a nested child resource of the cosmos db account resource
+//       - give the database the exact name that your function app expects (check your cosmos db input/output bindings)
 
 // TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
-//       - make sure to give the container the name that your function app expects
-//         (i.e. if you have hardcoded the name in your function app you need to set the same name for the container here)
-//       - you will need to configure the "partitionKey" property (properties.resource.partitionKey)
+//       - make the resource a nested child resource of the sqlDatabases resource (i.e. Account > Database > Container)
+//       - make sure to give the container the name that your function app expects (check your cosmos db input/output bindings)
+//       - configure the "partitionKey" property (properties.resource.partitionKey) to match what your function app expects (again, check bindings)
 
-// TODO: add an output for the connection string of the Cosmos DB account resource
-//       - hint: use listConnectionStrings() https://docs.microsoft.com/azure/azure-resource-manager/bicep/bicep-functions-resource#list
-//               see a sample response for this function at 
-//               https://docs.microsoft.com/rest/api/cosmos-db-resource-provider/2021-04-15/database-accounts/list-connection-strings#examples
-//               (scroll down to "Sample response")
+// TODO: add an output for the connection string of the Cosmos DB _account_ resource
+//       - hint: use listConnectionStrings()
+//         sample response from listConnectionStrings:
+//          {
+//            "connectionStrings": [
+//              {
+//                "connectionString": "connection-string",
+//                "description": "Name of the connection string"
+//              }
+//            ]
+//          } 
