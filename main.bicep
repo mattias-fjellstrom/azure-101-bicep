@@ -1,5 +1,5 @@
 @description('Timestamp used to uniquely name each module deployment')
-param now string = utcNow('')
+param now string = utcNow()
 
 module web './modules/web.bicep' = {
   name: 'web-module-${now}'
