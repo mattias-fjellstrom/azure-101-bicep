@@ -29,7 +29,7 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
 //       - configure the "partitionKey" property (properties.resource.partitionKey) to match what your function app expects (again, check bindings)
 
 // TODO: add an output for the connection string of the Cosmos DB _account_ resource
-//       - hint: use listConnectionStrings()
+//       - hint: use the listConnectionStrings() method on the account resource
 //         sample response from listConnectionStrings:
 //          {
 //            "connectionStrings": [
