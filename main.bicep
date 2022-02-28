@@ -1,43 +1,74 @@
-@description('Timestamp used to uniquely name each module deployment')
-param now string = utcNow()
+param location string = deployment().location
+param deploymentNameSuffix string = utcNow('yyyy-MM-ddTHH-mm')
+param resourceGroupName string = 'rg-${deployment().name}-${uniqueString(deployment().name)}'
+
+targetScope = 'subscription'
+
+resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: location
+}
 
 module web './modules/web.bicep' = {
-  name: 'web-module-${now}'
+  name: '${deploymentNameSuffix}-web'
+  scope: rg
+  params: {
+    location: location
+  }
 }
 
 module storage './modules/storage.bicep' = {
-  name: 'storage-module-${now}'
+  name: '${deploymentNameSuffix}-storage'
+  scope: rg
+  params: {
+    location: location
+  }
 }
 
 module cosmos './modules/cosmos.bicep' = {
-  name: 'cosmos-module-${now}'
+  name: '${deploymentNameSuffix}-cosmos'
+  scope: rg
+  params: {
+    location: location
+    databaseName: 'app'
+    containerName: 'images'
+  }
 }
 
 module servicebus './modules/servicebus.bicep' = {
-  name: 'servicebus-module-${now}'
+  name: '${deploymentNameSuffix}-servicebus'
+  scope: rg
+  params: {
+    location: location
+  }
 }
 
 module functionApp './modules/function-app.bicep' = {
-  name: 'function-app-module-${now}'
+  name: '${deploymentNameSuffix}-functionApp'
+  scope: rg
   params: {
-    // a list of endpoints that will be added to the CORS list on the function app
+    location: location
     corsUrls: [
       web.outputs.storageWebEndpoint
       web.outputs.cdnEndpoint
     ]
-
-    // TODO: add application settings that your function app requires
-    // - go through the local.settings.json file in your function app project to see which app settings you need
-    // - check ./modules/function-app.bicep to see which app settings are provided automatically for you
     appSettings: [
-      // {
-      //   name: 'EXAMPLE_SETTING_1'
-      //   value: 'example-value-1'
-      // }
-      // {
-      //   name: 'EXAMPLE_SETTING_2'
-      //   value: 'example-value-2'
-      // }
+      {
+        name: 'STORAGEACCOUNT_NAME'
+        value: storage.outputs.storageAccountName
+      }
+      {
+        name: 'STORAGEACCOUNT_CONNECTIONSTRING'
+        value: storage.outputs.connectionString
+      }
+      {
+        name: 'COSMOSDB_CONNECTIONSTRING'
+        value: cosmos.outputs.connectionString
+      }
+      {
+        name: 'SERVICEBUS_CONNECTIONSTRING'
+        value: servicebus.outputs.connectionString
+      }
     ]
   }
 }

@@ -1,12 +1,15 @@
-@description('A serverless Cosmos DB account')
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
+param databaseName string
+param containerName string
+param location string
+
+resource account 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
   name: 'cosmos-${uniqueString(resourceGroup().id)}'
-  location: resourceGroup().location
+  location: location
   properties: {
     databaseAccountOfferType: 'Standard'
     locations: [
       {
-        locationName: resourceGroup().location
+        locationName: location
         failoverPriority: 0
         isZoneRedundant: false
       }
@@ -17,25 +20,31 @@ resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2021-06-15' = {
       }
     ]
   }
+
+  resource database 'sqlDatabases' = {
+    name: databaseName
+    properties: {
+      resource: {
+        id: databaseName
+      }
+    }
+
+    resource container 'containers' = {
+      name: containerName
+      properties: {
+        resource: {
+          id: containerName
+          partitionKey: {
+            kind: 'Hash'
+            paths: [
+              '/id'
+            ]
+          }
+        }
+      }
+    }
+  }
 }
 
-// TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases
-//       - make the resource a nested child resource of the cosmos db account resource
-//       - give the database the exact name that your function app expects (check your cosmos db input/output bindings)
-
-// TODO: add a resource of type Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers
-//       - make the resource a nested child resource of the sqlDatabases resource (i.e. Account > Database > Container)
-//       - make sure to give the container the name that your function app expects (check your cosmos db input/output bindings)
-//       - configure the "partitionKey" property (properties.resource.partitionKey) to match what your function app expects (again, check bindings)
-
-// TODO: add an output for the connection string of the Cosmos DB _account_ resource
-//       - hint: use the listConnectionStrings() method on the account resource
-//         sample response from listConnectionStrings:
-//          {
-//            "connectionStrings": [
-//              {
-//                "connectionString": "connection-string",
-//                "description": "Name of the connection string"
-//              }
-//            ]
-//          } 
+#disable-next-line outputs-should-not-contain-secrets
+output connectionString string = account.listConnectionStrings().connectionStrings[0].connectionString
